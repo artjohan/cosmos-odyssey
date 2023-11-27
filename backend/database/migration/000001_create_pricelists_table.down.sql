@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS priceLists;
+DROP TABLE IF EXISTS pricelists;

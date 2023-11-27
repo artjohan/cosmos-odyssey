@@ -33,7 +33,7 @@ type Leg struct {
 	Providers []Provider `json:"providers"`
 }
 
-type PriceList struct {
+type Pricelist struct {
 	ID         string    `json:"id"`
 	ValidUntil time.Time `json:"validUntil"`
 	Legs       []Leg     `json:"legs"`

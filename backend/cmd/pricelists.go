@@ -9,7 +9,7 @@ import (
 	"github.com/artjohan/cosmos-odyssey/backend/models"
 )
 
-func (app *application) updatePriceLists() {
+func (app *application) updatePricelists() {
 	response, err := http.Get("https://cosmos-odyssey.azurewebsites.net/api/v1.0/TravelPrices")
 	if err != nil {
 		log.Println("Error making GET request:", err)
@@ -22,59 +22,59 @@ func (app *application) updatePriceLists() {
 		return
 	}
 
-	var priceList models.PriceList
+	var pricelist models.Pricelist
 	decoder := json.NewDecoder(response.Body)
-	err = decoder.Decode(&priceList)
+	err = decoder.Decode(&pricelist)
 	if err != nil {
 		log.Println("Error decoding JSON:", err)
 		return
 	}
 
-	statement := "SELECT EXISTS (SELECT 1 FROM priceLists WHERE id = ?) AS uuid_exists"
+	statement := "SELECT EXISTS (SELECT 1 FROM pricelists WHERE id = ?) AS uuid_exists"
 
 	var uuidExists bool
-	err = app.db.QueryRow(statement, priceList.ID).Scan(&uuidExists)
+	err = app.db.QueryRow(statement, pricelist.ID).Scan(&uuidExists)
 	if err != nil {
 		log.Println("Error checking for UUID existence:", err)
 		return
 	}
 
 	if !uuidExists {
-		addPriceList(app.db, priceList)
+		addPricelist(app.db, pricelist)
 	}
 }
 
-func addPriceList(db *sql.DB, priceList models.PriceList) {
-	var priceListCount int
-	err := db.QueryRow("SELECT COUNT(*) FROM priceLists").Scan(&priceListCount)
+func addPricelist(db *sql.DB, pricelist models.Pricelist) {
+	var pricelistCount int
+	err := db.QueryRow("SELECT COUNT(*) FROM pricelists").Scan(&pricelistCount)
 	if err != nil {
-		log.Println("Error getting count from priceLists table:", err)
+		log.Println("Error getting count from pricelists table:", err)
 		return
 	}
 
-	if priceListCount >= 15 {
-		_, err := db.Exec("DELETE FROM priceLists WHERE validUntil = (SELECT MIN(validUntil) FROM priceLists)")
+	if pricelistCount >= 15 {
+		_, err := db.Exec("DELETE FROM pricelists WHERE validUntil = (SELECT MIN(validUntil) FROM pricelists)")
 		if err != nil {
-			log.Println("Error deleting oldest priceList from table:", err)
+			log.Println("Error deleting oldest pricelist from table:", err)
 			return
 		}
 	}
 
-	addPriceListElementsToTable(db, priceList)
+	addPricelistElementsToTable(db, pricelist)
 }
 
-func addPriceListElementsToTable(db *sql.DB, priceList models.PriceList) {
-	statement := `INSERT INTO priceLists (id, validUntil) VALUES (?, ?)`
-	_, err := db.Exec(statement, priceList.ID, priceList.ValidUntil)
+func addPricelistElementsToTable(db *sql.DB, pricelist models.Pricelist) {
+	statement := `INSERT INTO pricelists (id, validUntil) VALUES (?, ?)`
+	_, err := db.Exec(statement, pricelist.ID, pricelist.ValidUntil)
 	if err != nil {
-		log.Println("Error inserting priceList into table:", err)
+		log.Println("Error inserting pricelist into table:", err)
 		return
 	}
 
 	// adding all the legs and providers from the current pricelist to the corresponding tables
-	for _, leg := range priceList.Legs {
-		statement := `INSERT INTO legs (id, priceListId, originPlanet, destinationPlanet, distance) VALUES (?, ?, ?, ?, ?)`
-		_, err := db.Exec(statement, leg.ID, priceList.ID, leg.RouteInfo.From.Name, leg.RouteInfo.To.Name, leg.RouteInfo.Distance)
+	for _, leg := range pricelist.Legs {
+		statement := `INSERT INTO legs (id, pricelistId, originPlanet, destinationPlanet, distance) VALUES (?, ?, ?, ?, ?)`
+		_, err := db.Exec(statement, leg.ID, pricelist.ID, leg.RouteInfo.From.Name, leg.RouteInfo.To.Name, leg.RouteInfo.Distance)
 		if err != nil {
 			log.Println("Error inserting leg into table:", err)
 			return
