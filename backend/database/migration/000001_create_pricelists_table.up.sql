@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS priceLists (
+    id TEXT PRIMARY KEY,
+    validUntil DATE NOT NULL
+);
