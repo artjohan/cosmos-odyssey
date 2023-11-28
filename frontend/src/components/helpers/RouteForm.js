@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 function RouteForm({ planets }) {
     const [originPlanet, setOriginPlanet] = useState("");
     const [destinationPlanet, setDestinationPlanet] = useState("");
+
+    const navigateTo = useNavigate();
 
     const switchInputs = () => {
         const temp = originPlanet;
@@ -11,8 +14,31 @@ function RouteForm({ planets }) {
         setDestinationPlanet(temp);
     };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const originExists = planets.some(
+            (planet) => planet.name.toLowerCase() === originPlanet.toLowerCase()
+        );
+
+        const destinationExists = planets.some(
+            (planet) => planet.name.toLowerCase() === originPlanet.toLowerCase()
+        );
+
+        if (!originExists && !destinationExists) {
+            alert("Origin or destination invalid");
+            return;
+        }
+
+        if (originPlanet.toLowerCase() === destinationPlanet.toLowerCase()) {
+            alert("Origin and destination can not be the same planet");
+            return;
+        }
+
+        navigateTo(`/search/${originPlanet}/${destinationPlanet}`);
+    };
+
     return (
-        <Form>
+        <Form onSubmit={(e) => handleSubmit(e)}>
             <Form.Group controlId="originPlanet">
                 <Form.Label>Origin Planet</Form.Label>
                 <Form.Control
@@ -21,6 +47,7 @@ function RouteForm({ planets }) {
                     list="originPlanets"
                     value={originPlanet}
                     onChange={(event) => setOriginPlanet(event.target.value)}
+                    autoComplete="off"
                 />
                 {planets.length > 0 && (
                     <datalist id="originPlanets">
@@ -62,6 +89,7 @@ function RouteForm({ planets }) {
                     onChange={(event) =>
                         setDestinationPlanet(event.target.value)
                     }
+                    autoComplete="off"
                 />
                 {planets.length > 0 && (
                     <datalist id="destinationPlanets">
@@ -82,7 +110,7 @@ function RouteForm({ planets }) {
                 )}
             </Form.Group>
 
-            <Button variant="dark" className="mt-4" block>
+            <Button variant="dark" className="mt-4" type="submit" block>
                 Find Route
             </Button>
         </Form>

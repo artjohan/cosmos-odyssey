@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import RouteForm from "./RouteForm";
+import RouteForm from "../helpers/RouteForm";
 
 function Home() {
     const [planets, setPlanets] = useState([]);

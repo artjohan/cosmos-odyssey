@@ -1,15 +1,16 @@
-package main
+package internal
 
 import (
 	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/artjohan/cosmos-odyssey/backend/models"
 )
 
-func (app *application) updatePricelists() {
+func UpdatePricelists(db *sql.DB) {
 	response, err := http.Get("https://cosmos-odyssey.azurewebsites.net/api/v1.0/TravelPrices")
 	if err != nil {
 		log.Println("Error making GET request:", err)
@@ -33,15 +34,28 @@ func (app *application) updatePricelists() {
 	statement := "SELECT EXISTS (SELECT 1 FROM pricelists WHERE uuid = ?) AS uuid_exists"
 
 	var uuidExists bool
-	err = app.db.QueryRow(statement, pricelist.ID).Scan(&uuidExists)
+	err = db.QueryRow(statement, pricelist.ID).Scan(&uuidExists)
 	if err != nil {
 		log.Println("Error checking for UUID existence:", err)
 		return
 	}
 
 	if !uuidExists {
-		addPricelist(app.db, pricelist)
+		addPricelist(db, pricelist)
 	}
+}
+
+func GetCurrentPricelistExpirationTime(db *sql.DB) (time.Duration, error) {
+	row := db.QueryRow("SELECT valid_until FROM pricelists ORDER BY valid_until DESC LIMIT 1")
+
+	var validUntil time.Time
+	err := row.Scan(&validUntil)
+	if err != nil {
+		return 0, err
+	}
+
+	remainingTime := time.Until(validUntil)
+	return remainingTime, nil
 }
 
 func addPricelist(db *sql.DB, pricelist models.Pricelist) {

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/artjohan/cosmos-odyssey/backend/database"
+	"github.com/artjohan/cosmos-odyssey/backend/internal"
 )
 
 type application struct {
@@ -25,7 +26,7 @@ func main() {
 	}
 	app.db = db
 
-	app.updatePricelists()
+	internal.UpdatePricelists(app.db)
 
 	// main goroutine context to allow for a graceful shutdown
 	ctx, cancel := context.WithCancel(context.Background())
@@ -38,7 +39,7 @@ func main() {
 	// goroutine for regularly fetching new pricelists and adding them to the table
 	go func() {
 		for {
-			remainingTime, err := getCurrentPricelistExpirationTime(app.db)
+			remainingTime, err := internal.GetCurrentPricelistExpirationTime(app.db)
 			if err != nil {
 				log.Println("Error getting pricelist expiration time:", err)
 			}
@@ -47,7 +48,7 @@ func main() {
 
 			select {
 			case <-time.After(remainingTime):
-				app.updatePricelists()
+				internal.UpdatePricelists(app.db)
 				log.Println("Pricelist updated")
 			case <-ctx.Done():
 				log.Println("Shutting down gracefully...")
@@ -80,17 +81,4 @@ func main() {
 		log.Println("Error during server shutdown:", err)
 	}
 	log.Println("Server shut down gracefully")
-}
-
-func getCurrentPricelistExpirationTime(db *sql.DB) (time.Duration, error) {
-	row := db.QueryRow("SELECT valid_until FROM pricelists ORDER BY valid_until DESC LIMIT 1")
-
-	var validUntil time.Time
-	err := row.Scan(&validUntil)
-	if err != nil {
-		return 0, err
-	}
-
-	remainingTime := time.Until(validUntil)
-	return remainingTime, nil
 }

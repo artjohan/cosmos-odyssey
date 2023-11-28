@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS providers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     uuid TEXT NOT NULL,
-    leg_id TEXT NOT NULL,
+    leg_id INTEGER NOT NULL,
     company_id INTEGER NOT NULL,
     price REAL NOT NULL,
     flight_start DATE NOT NULL,
