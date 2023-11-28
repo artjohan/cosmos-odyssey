@@ -15,6 +15,7 @@ function SearchResults() {
                 );
                 if (response.ok) {
                     const data = await response.json();
+                    console.log(data)
                     setDirectRoutes(data.directRoutes);
                     setLayoverRoutes(data.layoverRoutes);
                     setPricelistExpiration(data.pricelistExpiration);

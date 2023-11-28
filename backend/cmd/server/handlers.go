@@ -32,7 +32,10 @@ func (app *application) GetPlanetsHandler(w http.ResponseWriter, r *http.Request
 }
 
 func (app *application) GetRoutesHandler(w http.ResponseWriter, r *http.Request) {
-	jsonData, err := json.Marshal(internal.GetRoutes(app.db))
+	origin := r.URL.Query().Get("origin")
+	destination := r.URL.Query().Get("destination")
+
+	jsonData, err := json.Marshal(internal.GetRoutes(app.db, origin, destination))
 	if err != nil {
 		log.Println("Error converting planets struct into json", err)
 		return

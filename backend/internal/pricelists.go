@@ -113,7 +113,7 @@ func addPricelistElementsToTable(tx *sql.Tx, pricelist models.Pricelist) {
 	for _, leg := range pricelist.Legs {
 		fromPlanetId, toPlanetId := addPlanetAndReturnId(tx, leg.RouteInfo.From.Name), addPlanetAndReturnId(tx, leg.RouteInfo.To.Name)
 		statement := `INSERT INTO legs (uuid, pricelist_id, origin_id, destination_id, distance) VALUES (?, ?, ?, ?, ?)`
-		_, err := tx.Exec(statement, leg.ID, pricelistId, fromPlanetId, toPlanetId, leg.RouteInfo.Distance)
+		result, err := tx.Exec(statement, leg.ID, pricelistId, fromPlanetId, toPlanetId, leg.RouteInfo.Distance)
 		if err != nil {
 			log.Println("Error inserting leg into table:", err)
 			return
@@ -127,7 +127,7 @@ func addPricelistElementsToTable(tx *sql.Tx, pricelist models.Pricelist) {
 		for _, provider := range leg.Providers {
 			companyId := addCompanyAndReturnId(tx, provider.Company.Name, provider.Company.ID)
 			statement := `INSERT INTO providers (uuid, leg_id, company_id, price, flight_start, flight_end) VALUES (?, ?, ?, ?, ?, ?)`
-			_, err := tx.Exec(statement, provider.ID, legId, companyId, provider.Company.Name, provider.Price, provider.FlightStart, provider.FlightEnd)
+			_, err := tx.Exec(statement, provider.ID, legId, companyId, provider.Price, provider.FlightStart, provider.FlightEnd)
 			if err != nil {
 				log.Println("Error inserting provider into table:", err)
 				return
