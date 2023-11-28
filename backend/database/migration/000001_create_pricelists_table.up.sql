@@ -1,4 +1,5 @@
 CREATE TABLE IF NOT EXISTS pricelists (
-    id TEXT PRIMARY KEY,
-    validUntil DATE NOT NULL
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    uuid TEXT NOT NULL,
+    valid_until DATE NOT NULL
 );

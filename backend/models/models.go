@@ -38,3 +38,8 @@ type Pricelist struct {
 	ValidUntil time.Time `json:"validUntil"`
 	Legs       []Leg     `json:"legs"`
 }
+
+type Planet struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}

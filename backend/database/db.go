@@ -15,6 +15,13 @@ func OpenDatabase() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// enabling foreign key support
+	_, err = db.Exec("PRAGMA foreign_keys = ON")
+	if err != nil {
+		return nil, err
+	}
+	
 	err = MigrateDB(db)
 	if err != nil {
 		return nil, err

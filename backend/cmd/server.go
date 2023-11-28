@@ -12,6 +12,7 @@ type corsConfig struct {
 func (app *application) server() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", app.Home)
+	mux.HandleFunc("/get-planets", app.GetPlanets)
 	
 	return app.handleCORS(mux)
 }

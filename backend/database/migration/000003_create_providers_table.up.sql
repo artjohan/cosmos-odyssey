@@ -1,10 +1,11 @@
 CREATE TABLE IF NOT EXISTS providers (
-    id TEXT PRIMARY KEY,
-    legId TEXT NOT NULL,
-    companyId TEXT NOT NULL,
-    companyName TEXT NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    uuid TEXT NOT NULL,
+    leg_id TEXT NOT NULL,
+    company_id INTEGER NOT NULL,
     price REAL NOT NULL,
-    flightStart DATE NOT NULL,
-    flightEnd DATE NOT NULL,
-    FOREIGN KEY (legId) REFERENCES legs (id) ON DELETE CASCADE
+    flight_start DATE NOT NULL,
+    flight_end DATE NOT NULL,
+    FOREIGN KEY (leg_id) REFERENCES legs (id) ON DELETE CASCADE,
+    FOREIGN KEY (company_id) REFERENCES companies (id) ON DELETE CASCADE
 );

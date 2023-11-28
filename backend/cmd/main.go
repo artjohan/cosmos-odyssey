@@ -83,7 +83,7 @@ func main() {
 }
 
 func getCurrentPricelistExpirationTime(db *sql.DB) (time.Duration, error) {
-	row := db.QueryRow("SELECT validUntil FROM pricelists ORDER BY validUntil DESC LIMIT 1")
+	row := db.QueryRow("SELECT valid_until FROM pricelists ORDER BY valid_until DESC LIMIT 1")
 
 	var validUntil time.Time
 	err := row.Scan(&validUntil)

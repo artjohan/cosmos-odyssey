@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS routes (
-    reservationId TEXT NOT NULL,
-    providerId TEXT NOT NULL,
-    FOREIGN KEY (reservationId) REFERENCES reservations (id) ON DELETE CASCADE,
-    FOREIGN KEY (providerId) REFERENCES providers (id) ON DELETE CASCADE
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    reservation_id TEXT NOT NULL,
+    provider_id TEXT NOT NULL,
+    FOREIGN KEY (reservation_id) REFERENCES reservations (id) ON DELETE CASCADE,
+    FOREIGN KEY (provider_id) REFERENCES providers (id) ON DELETE CASCADE
 );

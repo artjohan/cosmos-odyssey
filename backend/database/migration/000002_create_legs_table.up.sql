@@ -1,8 +1,11 @@
 CREATE TABLE IF NOT EXISTS legs (
-    id TEXT PRIMARY KEY,
-    pricelistId TEXT NOT NULL,
-    originPlanet TEXT NOT NULL,
-    destinationPlanet TEXT NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    uuid TEXT NOT NULL,
+    pricelist_id TEXT NOT NULL,
+    origin_id TEXT NOT NULL,
+    destination_id TEXT NOT NULL,
     distance INT NOT NULL,
-    FOREIGN KEY (pricelistId) REFERENCES pricelists (id) ON DELETE CASCADE
+    FOREIGN KEY (pricelist_id) REFERENCES pricelists (id) ON DELETE CASCADE,
+    FOREIGN KEY (origin_id) REFERENCES planets (id) ON DELETE CASCADE,
+    FOREIGN KEY (destination_id) REFERENCES planets (id) ON DELETE CASCADE
 );
