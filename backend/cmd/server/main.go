@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/artjohan/cosmos-odyssey/backend/database"
-	"github.com/artjohan/cosmos-odyssey/backend/internal"
+	"github.com/artjohan/cosmos-odyssey/backend/internal/pricelists"
 )
 
 type application struct {
@@ -26,7 +26,7 @@ func main() {
 	}
 	app.db = db
 
-	internal.UpdatePricelists(app.db)
+	pricelists.UpdatePricelists(app.db)
 
 	// main goroutine context to allow for a graceful shutdown
 	ctx, cancel := context.WithCancel(context.Background())
@@ -39,7 +39,7 @@ func main() {
 	// goroutine for regularly fetching new pricelists and adding them to the table
 	go func() {
 		for {
-			remainingTime, err := internal.GetCurrentPricelistExpirationTime(app.db)
+			remainingTime, err := pricelists.GetCurrentPricelistExpirationTime(app.db)
 			if err != nil {
 				log.Println("Error getting pricelist expiration time:", err)
 			}
@@ -48,7 +48,7 @@ func main() {
 
 			select {
 			case <-time.After(remainingTime):
-				internal.UpdatePricelists(app.db)
+				pricelists.UpdatePricelists(app.db)
 				log.Println("Pricelist updated")
 			case <-ctx.Done():
 				log.Println("Shutting down gracefully...")
