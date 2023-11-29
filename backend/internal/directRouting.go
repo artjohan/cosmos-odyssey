@@ -35,20 +35,6 @@ func GetRoutes(db *sql.DB, origin, destination string) models.AllRoutes {
 	return routes
 }
 
-func getLayoverRoutesInfo(db *sql.DB, origin, destination string) []models.LayoverRoute {
-	routes := findAllRoutes(db, origin, destination)
-
-	// Print the routes
-	for _, route := range routes {
-		if len(route) > 1 {
-			log.Println("Route:", route)
-		}
-	}
-
-	var layoverRoutes = []models.LayoverRoute{}
-	return layoverRoutes
-}
-
 func getDirectRoutesInfo(db *sql.DB, origin, destination string) []models.Route {
 	var routes = []models.Route{}
 
@@ -97,62 +83,3 @@ func getDirectRoutesInfo(db *sql.DB, origin, destination string) []models.Route 
 	return routes
 }
 
-func findAllRoutes(db *sql.DB, originName, destinationName string) [][]models.AlgoLeg {
-	var routes [][]models.AlgoLeg
-	visited := make(map[string]bool)
-	currentRoute := []models.AlgoLeg{}
-
-	findRoutesRecursive(db, originName, destinationName, visited, currentRoute, &routes)
-
-	return routes
-}
-
-func findRoutesRecursive(db *sql.DB, currentName, destinationName string, visited map[string]bool, currentRoute []models.AlgoLeg, routes *[][]models.AlgoLeg) {
-	if currentName == destinationName {
-		*routes = append(*routes, append([]models.AlgoLeg(nil), currentRoute...))
-		return
-	}
-
-	visited[currentName] = true
-
-	query := `
-		WITH LatestPricelist AS (
-			SELECT id
-			FROM pricelists
-			ORDER BY valid_until DESC
-			LIMIT 1
-		)
-		SELECT 
-			l.id,
-			l.origin_id,
-			p1.name AS origin_name,
-			l.destination_id,
-			p2.name AS destination_name,
-			l.distance,
-			l.pricelist_id
-		FROM legs AS l
-		JOIN LatestPricelist AS lp ON l.pricelist_id = lp.id
-		JOIN planets AS p1 ON l.origin_id = p1.id
-		JOIN planets AS p2 ON l.destination_id = p2.id
-		WHERE p1.name = ?;
-	`
-
-	rows, err := db.Query(query, currentName)
-	if err != nil {
-		log.Println("Error fetching elements from legs table", err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var leg models.AlgoLeg
-		if err := rows.Scan(&leg.ID, &leg.Origin.ID, &leg.Origin.Name, &leg.Destination.ID, &leg.Destination.Name, &leg.Distance, &leg.PricelistID); err != nil {
-			log.Println("Error scanning elements into struct", err)
-		}
-
-		if !visited[leg.Destination.Name] {
-			findRoutesRecursive(db, leg.Destination.Name, destinationName, visited, append(currentRoute, leg), routes)
-		}
-	}
-
-	visited[currentName] = false
-}

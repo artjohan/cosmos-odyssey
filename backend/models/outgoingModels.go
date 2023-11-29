@@ -29,6 +29,14 @@ type Route struct {
 	TravelTime  time.Time       `json:"travelTime"`
 }
 
+type RouteData struct {
+	ID          int
+	LegID       int
+	FlightStart time.Time
+	FlightEnd   time.Time
+	Price       float64
+}
+
 type ProviderCompany struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
@@ -38,6 +46,4 @@ type AlgoLeg struct {
 	ID          int
 	Origin      Planet
 	Destination Planet
-	Distance    int
-	PricelistID int
 }
