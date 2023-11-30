@@ -19,6 +19,10 @@ export const formatDuration = (nanoseconds) => {
     return durationString.trim();
 };
 
+export const toTitleCase = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
 export const formatDate = (date) => {
     const options = {
         year: "numeric",

@@ -40,7 +40,7 @@ func GetRoutes(db *sql.DB, origin, destination string) models.SearchResponse {
 
 func allRoutesInfo(db *sql.DB, origin, destination string) []models.RouteData {
 	legs := findAllLegs(db, origin, destination)
-	var allRoutes []models.RouteData
+	var allRoutes = []models.RouteData{}
 
 	for _, leg := range legs {
 		layoverRoutes := layoverRoutes(queryRouteData(db), leg)

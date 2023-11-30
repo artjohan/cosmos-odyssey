@@ -21,10 +21,10 @@ function RouteForm({ planets }) {
         );
 
         const destinationExists = planets.some(
-            (planet) => planet.name.toLowerCase() === originPlanet.toLowerCase()
+            (planet) => planet.name.toLowerCase() === destinationPlanet.toLowerCase()
         );
 
-        if (!originExists && !destinationExists) {
+        if (!originExists || !destinationExists) {
             alert("Origin or destination invalid");
             return;
         }

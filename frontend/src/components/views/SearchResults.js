@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { Route, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import RouteTable from "../utils/RouteTable";
-import { Button } from "react-bootstrap";
+import { Nav } from "react-bootstrap";
+import SmallRouteForm from "../utils/SmallRouteForm";
+import { toTitleCase } from "../utils/UtilFunctions";
+import Countdown from "react-countdown";
 
 function SearchResults() {
     const { origin, destination } = useParams();
@@ -11,10 +14,6 @@ function SearchResults() {
     const [pricelistId, setPricelistId] = useState(null);
 
     const [selectedTab, setSelectedTab] = useState("direct");
-
-    const handleTabClick = (tab) => {
-        setSelectedTab(tab);
-    };
 
     const allUniqueProviders = (data) => {
         var providersMap = new Map();
@@ -31,8 +30,28 @@ function SearchResults() {
         return uniqueProviders;
     };
 
-    const toTitleCase = (str) => {
-        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    const handleTabSelect = (tab) => {
+        setSelectedTab(tab);
+    };
+
+    const renderer = ({ minutes, seconds, completed }) => {
+        if (completed) {
+            window.location.reload();
+        } else {
+            return (
+                <>
+                    <span>
+                        Time left until the pricelist expires and this page
+                        refreshes:
+                    </span>
+                    <br></br>
+                    <h1>
+                        {minutes}:{seconds < 10 ? "0" : ""}
+                        {seconds}
+                    </h1>
+                </>
+            );
+        }
     };
 
     useEffect(() => {
@@ -58,7 +77,7 @@ function SearchResults() {
                             : "layover"
                     );
                     setPricelistExpiryDate(data.pricelistExpiryDate);
-                    setPricelistId(data.pricelistId)
+                    setPricelistId(data.pricelistId);
                 } else {
                     console.log(response.statusText);
                 }
@@ -67,81 +86,89 @@ function SearchResults() {
             }
         };
         getRoutes();
-    }, []);
+    }, [origin, destination]);
 
-    if (directRoutes.length > 0 || layoverRoutes.length > 0) {
+    if (directRoutes || layoverRoutes) {
         return (
-            <div style={{ marginTop: "200px" }}>
-                <div className="d-flex justify-content-between">
-                    <div
-                        variant={
-                            selectedTab === "direct" ? "contained" : "outlined"
-                        }
-                        onClick={() => handleTabClick("direct")}
-                        className={
-                            "tableSelect" +
-                            (selectedTab === "direct" ? " selected" : "")
-                        }
-                    >
-                        DIRECT ROUTES
+            <>
+                <SmallRouteForm origin={origin} destination={destination} />
+                {pricelistExpiryDate && (
+                    <div style={{ textAlign: "right", marginRight: "20px" }}>
+                        <Countdown
+                            date={pricelistExpiryDate}
+                            renderer={renderer}
+                        />
                     </div>
-                    <div
-                        onClick={() => handleTabClick("layover")}
-                        className={
-                            "tableSelect" +
-                            (selectedTab === "layover" ? " selected" : "")
-                        }
+                )}
+                <div style={{ marginTop: "20px" }}>
+                    <Nav
+                        variant="tabs"
+                        onSelect={handleTabSelect}
+                        activeKey={selectedTab}
                     >
-                        LAYOVER ROUTES
-                    </div>
+                        <Nav.Item style={{ width: "50%", textAlign: "center" }}>
+                            <Nav.Link eventKey="direct">DIRECT ROUTES</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item style={{ width: "50%", textAlign: "center" }}>
+                            <Nav.Link eventKey="layover">
+                                LAYOVER ROUTES
+                            </Nav.Link>
+                        </Nav.Item>
+                    </Nav>
+
+                    {selectedTab === "direct" &&
+                        (directRoutes.length > 0 ? (
+                            <RouteTable
+                                routes={directRoutes}
+                                pricelistId={pricelistId}
+                                uniqueProviders={allUniqueProviders(
+                                    directRoutes
+                                )}
+                                type={`All direct routes from ${toTitleCase(
+                                    origin
+                                )} to ${toTitleCase(destination)}`}
+                            />
+                        ) : (
+                            <div
+                                style={{
+                                    textAlign: "center",
+                                    padding: "50px",
+                                    fontSize: "xx-large",
+                                }}
+                            >
+                                There are no direct routes from{" "}
+                                {toTitleCase(origin)} to{" "}
+                                {toTitleCase(destination)}
+                            </div>
+                        ))}
+
+                    {selectedTab === "layover" &&
+                        (layoverRoutes.length > 0 ? (
+                            <RouteTable
+                                routes={layoverRoutes}
+                                pricelistId={pricelistId}
+                                uniqueProviders={allUniqueProviders(
+                                    layoverRoutes
+                                )}
+                                type={`All layover routes from ${toTitleCase(
+                                    origin
+                                )} to ${toTitleCase(destination)}`}
+                            />
+                        ) : (
+                            <div
+                                style={{
+                                    textAlign: "center",
+                                    padding: "50px",
+                                    fontSize: "xx-large",
+                                }}
+                            >
+                                There are no layover routes from{" "}
+                                {toTitleCase(origin)} to{" "}
+                                {toTitleCase(destination)}
+                            </div>
+                        ))}
                 </div>
-
-                {selectedTab === "direct" &&
-                    (directRoutes.length > 0 ? (
-                        <RouteTable
-                            routes={directRoutes}
-                            pricelistId={pricelistId}
-                            uniqueProviders={allUniqueProviders(directRoutes)}
-                            type={`All direct routes from ${toTitleCase(
-                                origin
-                            )} to ${toTitleCase(destination)}`}
-                        />
-                    ) : (
-                        <div
-                            style={{
-                                textAlign: "center",
-                                padding: "50px",
-                                fontSize: "xx-large",
-                            }}
-                        >
-                            There are no direct routes from{" "}
-                            {toTitleCase(origin)} to {toTitleCase(destination)}
-                        </div>
-                    ))}
-
-                {selectedTab === "layover" &&
-                    (layoverRoutes.length > 0 ? (
-                        <RouteTable
-                            routes={layoverRoutes}
-                            pricelistId={pricelistId}
-                            uniqueProviders={allUniqueProviders(layoverRoutes)}
-                            type={`All layover routes from ${toTitleCase(
-                                origin
-                            )} to ${toTitleCase(destination)}`}
-                        />
-                    ) : (
-                        <div
-                            style={{
-                                textAlign: "center",
-                                padding: "50px",
-                                fontSize: "xx-large",
-                            }}
-                        >
-                            There are no layover routes from{" "}
-                            {toTitleCase(origin)} to {toTitleCase(destination)}
-                        </div>
-                    ))}
-            </div>
+            </>
         );
     } else {
         return null;
