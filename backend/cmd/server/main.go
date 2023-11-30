@@ -39,7 +39,7 @@ func main() {
 	// goroutine for regularly fetching new pricelists and adding them to the table
 	go func() {
 		for {
-			remainingTime, err := pricelists.GetCurrentPricelistExpirationTime(app.db)
+			remainingTime, err := pricelists.CurrentPricelistExpirationTime(app.db)
 			if err != nil {
 				log.Println("Error getting pricelist expiration time:", err)
 			}

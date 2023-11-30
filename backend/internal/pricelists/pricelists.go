@@ -45,7 +45,7 @@ func UpdatePricelists(db *sql.DB) {
 	}
 }
 
-func GetCurrentPricelistExpirationTime(db *sql.DB) (time.Duration, error) {
+func CurrentPricelistExpirationTime(db *sql.DB) (time.Duration, error) {
 	row := db.QueryRow("SELECT valid_until FROM pricelists ORDER BY valid_until DESC LIMIT 1")
 
 	var validUntil time.Time

@@ -2,7 +2,7 @@ package routing
 
 import "github.com/artjohan/cosmos-odyssey/backend/models"
 
-func getLayoverRoutes(routeData []models.Route, legIDs []int) [][]models.Route {
+func layoverRoutes(routeData []models.Route, legIDs []int) [][]models.Route {
 	var layoverRoutes [][]models.Route
 	visited := make(map[int]bool)
 	currentRoute := []models.Route{}

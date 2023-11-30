@@ -15,6 +15,21 @@ function SearchResults() {
         setSelectedTab(tab);
     };
 
+    const allUniqueProviders = (data) => {
+        var providersMap = new Map();
+        data.forEach((routeData) => {
+            routeData.routes.forEach((route) => {
+                providersMap.set(
+                    route.providerCompany.id,
+                    route.providerCompany
+                );
+            });
+        });
+
+        var uniqueProviders = Array.from(providersMap.values());
+        return uniqueProviders;
+    };
+
     const toTitleCase = (str) => {
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     };
@@ -29,7 +44,6 @@ function SearchResults() {
                 );
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data);
                     setDirectRoutes(
                         data.filter((obj) => obj.routes.length === 1)
                     );
@@ -83,11 +97,23 @@ function SearchResults() {
                     (directRoutes.length > 0 ? (
                         <RouteTable
                             routes={directRoutes}
-                            type={`All direct routes from ${toTitleCase(origin)} to ${toTitleCase(destination)}`}
+                            uniqueProviders={allUniqueProviders(
+                                directRoutes
+                            )}
+                            type={`All direct routes from ${toTitleCase(
+                                origin
+                            )} to ${toTitleCase(destination)}`}
                         />
                     ) : (
-                        <div style={{textAlign: "center", padding: "50px", fontSize: "xx-large"}}>
-                            There are no direct routes from {toTitleCase(origin)} to {toTitleCase(destination)}
+                        <div
+                            style={{
+                                textAlign: "center",
+                                padding: "50px",
+                                fontSize: "xx-large",
+                            }}
+                        >
+                            There are no direct routes from{" "}
+                            {toTitleCase(origin)} to {toTitleCase(destination)}
                         </div>
                     ))}
 
@@ -95,11 +121,23 @@ function SearchResults() {
                     (layoverRoutes.length > 0 ? (
                         <RouteTable
                             routes={layoverRoutes}
-                            type={`All layover routes from ${toTitleCase(origin)} to ${toTitleCase(destination)}`}
+                            uniqueProviders={allUniqueProviders(
+                                layoverRoutes
+                            )}
+                            type={`All layover routes from ${toTitleCase(
+                                origin
+                            )} to ${toTitleCase(destination)}`}
                         />
                     ) : (
-                        <div>
-                            There are no layover routes from {toTitleCase(origin)} to {toTitleCase(destination)}
+                        <div
+                            style={{
+                                textAlign: "center",
+                                padding: "50px",
+                                fontSize: "xx-large",
+                            }}
+                        >
+                            There are no layover routes from{" "}
+                            {toTitleCase(origin)} to {toTitleCase(destination)}
                         </div>
                     ))}
             </div>

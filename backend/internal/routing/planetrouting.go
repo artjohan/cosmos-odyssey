@@ -29,17 +29,17 @@ func GetPlanets(db *sql.DB) []models.Planet {
 }
 
 func GetRoutes(db *sql.DB, origin, destination string) []models.RouteData {
-	var allRoutes = getAllRoutesInfo(db, origin, destination)
+	var allRoutes = allRoutesInfo(db, origin, destination)
 
 	return allRoutes
 }
 
-func getAllRoutesInfo(db *sql.DB, origin, destination string) []models.RouteData {
+func allRoutesInfo(db *sql.DB, origin, destination string) []models.RouteData {
 	legs := findAllLegs(db, origin, destination)
 	var allRoutes []models.RouteData
 
 	for _, leg := range legs {
-		layoverRoutes := getLayoverRoutes(queryRouteData(db), leg)
+		layoverRoutes := layoverRoutes(queryRouteData(db), leg)
 		for _, layoverRoute := range layoverRoutes {
 			var route models.RouteData
 

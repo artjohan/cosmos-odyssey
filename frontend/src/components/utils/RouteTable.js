@@ -1,38 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MaterialTable from "material-table";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { MenuItem, Select, ThemeProvider, createTheme } from "@mui/material";
 
-function RouteTable({ routes, type }) {
+function RouteTable({ routes, type, uniqueProviders }) {
     const defaultMaterialTheme = createTheme();
-    const [hoveredRow, setHoveredRow] = useState(null);
-
+    const [selectedOption, setSelectedOption] = useState("");
     const isLayoverType = type.toLowerCase().includes("layover");
+
+    const [tableData, setTableData] = useState(routes);
 
     const handleRowClick = (event, rowData) => {
         console.log("Row clicked:", rowData);
     };
 
-    const handleRowHover = (event, rowData) => {
-        setHoveredRow(rowData.tableData.id);
-    };
-
-    const handleRowLeave = () => {
-        setHoveredRow(null);
-    };
-
     const displayProviders = (rowData) => {
-        if (!isLayoverType) {
-            return rowData.routes[0].providerCompany.name;
-        }
-
         var providersMap = new Map();
         rowData.routes.forEach((route) => {
             providersMap.set(route.providerCompany.id, route.providerCompany);
         });
 
         var uniqueProviders = Array.from(providersMap.values());
-        console.log(uniqueProviders);
-        return uniqueProviders.length;
+
+        return uniqueProviders.map((element) => element.name).join(",\n");
     };
 
     const formatDuration = (nanoseconds) => {
@@ -56,6 +45,19 @@ function RouteTable({ routes, type }) {
         return durationString.trim();
     };
 
+    useEffect(() => {
+        const filteredData =
+            selectedOption === ""
+                ? routes
+                : routes.filter((route) =>
+                      route.routes.some(
+                          (r) => r.providerCompany.name === selectedOption
+                      )
+                  );
+
+        setTableData(filteredData);
+    }, [selectedOption, routes]);
+
     return (
         <div style={{ width: "100%", height: "100%" }}>
             <ThemeProvider theme={defaultMaterialTheme}>
@@ -63,12 +65,20 @@ function RouteTable({ routes, type }) {
                     columns={[
                         {
                             title: "Trip start",
-                            render: (rowData) =>
-                                rowData.routes.length > 0
+                            render: (rowData) => {
+                                const options = {
+                                    year: "numeric",
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                };
+                                return rowData.routes.length > 0
                                     ? new Date(
                                           rowData.routes[0].flightStart
-                                      ).toLocaleString()
-                                    : "",
+                                      ).toLocaleString("en-GB", options)
+                                    : "";
+                            },
                             type: "datetime",
                             customSort: (a, b) =>
                                 new Date(a.routes[0].flightStart) -
@@ -76,14 +86,22 @@ function RouteTable({ routes, type }) {
                         },
                         {
                             title: "Trip end",
-                            render: (rowData) =>
-                                rowData.routes.length > 0
+                            render: (rowData) => {
+                                const options = {
+                                    year: "numeric",
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                };
+                                return rowData.routes.length > 0
                                     ? new Date(
                                           rowData.routes[
                                               rowData.routes.length - 1
                                           ].flightEnd
-                                      ).toLocaleString()
-                                    : "",
+                                      ).toLocaleString("en-GB", options)
+                                    : "";
+                            },
                             type: "datetime",
                             customSort: (a, b) =>
                                 new Date(
@@ -120,11 +138,13 @@ function RouteTable({ routes, type }) {
                             title: `Provider${isLayoverType ? "s" : ""}`,
                             render: (rowData) => displayProviders(rowData),
                             type: "numeric",
-                            customSort: (a, b) =>
-                                a.routes.length - b.routes.length,
+                            cellStyle: {
+                                whiteSpace: "pre-line",
+                            },
+                            sorting: false,
                         },
                     ]}
-                    data={routes}
+                    data={tableData}
                     options={{
                         pageSize: 20,
                         emptyRowsWhenPaging: false,
@@ -135,13 +155,38 @@ function RouteTable({ routes, type }) {
                             searchPlaceholder: "Search for providers",
                         },
                     }}
+                    components={{
+                        Toolbar: () => (
+                            <div>
+                                <Select
+                                    style={{ width: "200px", margin: "10px" }}
+                                    value={selectedOption}
+                                    onChange={(event) =>
+                                        setSelectedOption(event.target.value)
+                                    }
+                                    displayEmpty
+                                    renderValue={(value) =>
+                                        value === "" ? "Select provider" : value
+                                    }
+                                >
+                                    <MenuItem value="">All providers</MenuItem>
+                                    {uniqueProviders.map((provider) => (
+                                        <MenuItem
+                                            key={provider.id}
+                                            value={provider.name}
+                                        >
+                                            {provider.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </div>
+                        ),
+                    }}
                     onRowClick={handleRowClick}
-                    onRowMouseOver={handleRowHover}
-                    onRowMouseLeave={handleRowLeave}
                     title={type}
                     style={{
                         "& tbody tr:hover": {
-                            backgroundColor: "rgba(0, 0, 0, 0.04)", // Set your hover background color here
+                            backgroundColor: "rgba(0, 0, 0, 0.04)",
                         },
                     }}
                 />

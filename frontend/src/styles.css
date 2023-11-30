@@ -14,7 +14,7 @@ datalist option {
 }
 
 .selected {
-    border: 2px solid rgb(19, 100, 100);
+    border: 2px solid rgb(0, 0, 0);
 }
 
 .tableSelect:hover {
