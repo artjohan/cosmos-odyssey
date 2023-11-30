@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Route, useParams } from "react-router-dom";
+import RouteTable from "../utils/RouteTable";
 
 function SearchResults() {
     const { origin, destination } = useParams();
@@ -7,15 +8,27 @@ function SearchResults() {
     const [layoverRoutes, setLayoverRoutes] = useState([]);
     const [pricelistExpiration, setPricelistExpiration] = useState(null);
 
+    const toTitleCase = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    };
+
     useEffect(() => {
         const getRoutes = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8080/get-routes?origin=${origin}&destination=${destination}`
+                    `http://localhost:8080/get-routes?origin=${toTitleCase(
+                        origin
+                    )}&destination=${toTitleCase(destination)}`
                 );
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data)
+                    console.log(data);
+                    setDirectRoutes(
+                        data.filter((obj) => obj.routes.length === 1)
+                    );
+                    setLayoverRoutes(
+                        data.filter((obj) => obj.routes.length > 1)
+                    );
                     setPricelistExpiration(data.pricelistExpiration);
                 } else {
                     console.log(response.statusText);
@@ -27,11 +40,19 @@ function SearchResults() {
         getRoutes();
     }, []);
 
-    return (
-        <div>
-            searching for {origin} to {destination}
-        </div>
-    );
+    if (directRoutes.length > 0 || layoverRoutes.length > 0) {
+        return (
+            <div>
+                {directRoutes.length > 0 && (
+                    <RouteTable routes={directRoutes} type={"All direct routes"}></RouteTable>
+                )}
+                {layoverRoutes.length > 0 && (
+                    <RouteTable routes={layoverRoutes} type={"All layover routes"}></RouteTable>
+                )}
+            </div>
+        );
+    } else {
+        return null;
+    }
 }
-
 export default SearchResults;
