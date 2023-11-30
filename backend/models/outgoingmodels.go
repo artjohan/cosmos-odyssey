@@ -7,6 +7,12 @@ type Planet struct {
 	Name string `json:"name"`
 }
 
+type SearchResponse struct {
+	RouteData           []RouteData `json:"routeData"`
+	PricelistID         int         `json:"pricelistId"`
+	PricelistExpiryDate time.Time   `json:"pricelistExpiryDate"`
+}
+
 type RouteData struct {
 	Routes          []Route       `json:"routes"`
 	TotalPrice      float64       `json:"totalPrice"`

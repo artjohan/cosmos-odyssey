@@ -7,7 +7,8 @@ function SearchResults() {
     const { origin, destination } = useParams();
     const [directRoutes, setDirectRoutes] = useState([]);
     const [layoverRoutes, setLayoverRoutes] = useState([]);
-    const [pricelistExpiration, setPricelistExpiration] = useState(null);
+    const [pricelistExpiryDate, setPricelistExpiryDate] = useState(null);
+    const [pricelistId, setPricelistId] = useState(null);
 
     const [selectedTab, setSelectedTab] = useState("direct");
 
@@ -45,17 +46,19 @@ function SearchResults() {
                 if (response.ok) {
                     const data = await response.json();
                     setDirectRoutes(
-                        data.filter((obj) => obj.routes.length === 1)
+                        data.routeData.filter((obj) => obj.routes.length === 1)
                     );
                     setLayoverRoutes(
-                        data.filter((obj) => obj.routes.length > 1)
+                        data.routeData.filter((obj) => obj.routes.length > 1)
                     );
                     setSelectedTab(
-                        data.filter((obj) => obj.routes.length === 1).length
+                        data.routeData.filter((obj) => obj.routes.length === 1)
+                            .length
                             ? "direct"
                             : "layover"
                     );
-                    setPricelistExpiration(data.pricelistExpiration);
+                    setPricelistExpiryDate(data.pricelistExpiryDate);
+                    setPricelistId(data.pricelistId)
                 } else {
                     console.log(response.statusText);
                 }
@@ -97,9 +100,8 @@ function SearchResults() {
                     (directRoutes.length > 0 ? (
                         <RouteTable
                             routes={directRoutes}
-                            uniqueProviders={allUniqueProviders(
-                                directRoutes
-                            )}
+                            pricelistId={pricelistId}
+                            uniqueProviders={allUniqueProviders(directRoutes)}
                             type={`All direct routes from ${toTitleCase(
                                 origin
                             )} to ${toTitleCase(destination)}`}
@@ -121,9 +123,8 @@ function SearchResults() {
                     (layoverRoutes.length > 0 ? (
                         <RouteTable
                             routes={layoverRoutes}
-                            uniqueProviders={allUniqueProviders(
-                                layoverRoutes
-                            )}
+                            pricelistId={pricelistId}
+                            uniqueProviders={allUniqueProviders(layoverRoutes)}
                             type={`All layover routes from ${toTitleCase(
                                 origin
                             )} to ${toTitleCase(destination)}`}

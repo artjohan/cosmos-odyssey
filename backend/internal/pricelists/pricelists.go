@@ -57,3 +57,16 @@ func CurrentPricelistExpirationTime(db *sql.DB) (time.Duration, error) {
 	remainingTime := time.Until(validUntil)
 	return remainingTime, nil
 }
+
+func CurrentPricelistIDAndExpirationDate(db *sql.DB) (int, time.Time)  {
+	row := db.QueryRow("SELECT id, valid_until FROM pricelists ORDER BY valid_until DESC LIMIT 1")
+
+	var validUntil time.Time
+	var id int
+	err := row.Scan(&id, &validUntil)
+	if err != nil {
+		log.Println("Error scanning id and valid until into variables:", err)
+	}
+
+	return id, validUntil
+}

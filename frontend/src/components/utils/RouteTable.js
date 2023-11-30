@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from "react";
 import MaterialTable from "material-table";
 import { MenuItem, Select, ThemeProvider, createTheme } from "@mui/material";
+import RouteDetailsPopup from "./RouteDetailsPopup";
+import { formatDate, formatDuration } from "./UtilFunctions";
 
-function RouteTable({ routes, type, uniqueProviders }) {
+function RouteTable({ routes, type, uniqueProviders, pricelistId }) {
     const defaultMaterialTheme = createTheme();
     const [selectedOption, setSelectedOption] = useState("");
     const isLayoverType = type.toLowerCase().includes("layover");
 
+    const [selectedRow, setSelectedRow] = useState(null);
+    const [showDetails, setShowDetails] = useState(false);
+
     const [tableData, setTableData] = useState(routes);
 
     const handleRowClick = (event, rowData) => {
-        console.log("Row clicked:", rowData);
+        setSelectedRow(rowData);
+        setShowDetails(true);
     };
 
     const displayProviders = (rowData) => {
@@ -22,27 +28,6 @@ function RouteTable({ routes, type, uniqueProviders }) {
         var uniqueProviders = Array.from(providersMap.values());
 
         return uniqueProviders.map((element) => element.name).join(",\n");
-    };
-
-    const formatDuration = (nanoseconds) => {
-        const seconds = nanoseconds / 1e9;
-        const days = Math.floor(seconds / 86400);
-        const hours = Math.floor((seconds % 86400) / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-
-        let durationString = "";
-
-        if (days > 0) {
-            durationString += `${days}d `;
-        }
-
-        if (hours > 0 || days > 0) {
-            durationString += `${hours}h `;
-        }
-
-        durationString += `${minutes}m`;
-
-        return durationString.trim();
     };
 
     useEffect(() => {
@@ -74,9 +59,7 @@ function RouteTable({ routes, type, uniqueProviders }) {
                                     minute: "2-digit",
                                 };
                                 return rowData.routes.length > 0
-                                    ? new Date(
-                                          rowData.routes[0].flightStart
-                                      ).toLocaleString("en-GB", options)
+                                    ? formatDate(rowData.routes[0].flightStart)
                                     : "";
                             },
                             type: "datetime",
@@ -95,11 +78,11 @@ function RouteTable({ routes, type, uniqueProviders }) {
                                     minute: "2-digit",
                                 };
                                 return rowData.routes.length > 0
-                                    ? new Date(
+                                    ? formatDate(
                                           rowData.routes[
                                               rowData.routes.length - 1
                                           ].flightEnd
-                                      ).toLocaleString("en-GB", options)
+                                      )
                                     : "";
                             },
                             type: "datetime",
@@ -191,6 +174,16 @@ function RouteTable({ routes, type, uniqueProviders }) {
                     }}
                 />
             </ThemeProvider>
+            {selectedRow && (
+                <RouteDetailsPopup
+                    routes={selectedRow.routes}
+                    totalPrice={selectedRow.totalPrice}
+                    totalTravelTime={selectedRow.totalTravelTime}
+                    pricelistId={pricelistId}
+                    show={showDetails}
+                    onClose={() => setShowDetails(false)}
+                ></RouteDetailsPopup>
+            )}
         </div>
     );
 }

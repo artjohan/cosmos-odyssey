@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/artjohan/cosmos-odyssey/backend/internal/pkg"
+	"github.com/artjohan/cosmos-odyssey/backend/internal/pricelists"
 	"github.com/artjohan/cosmos-odyssey/backend/models"
 )
 
@@ -28,10 +29,13 @@ func GetPlanets(db *sql.DB) []models.Planet {
 	return planets
 }
 
-func GetRoutes(db *sql.DB, origin, destination string) []models.RouteData {
-	var allRoutes = allRoutesInfo(db, origin, destination)
+func GetRoutes(db *sql.DB, origin, destination string) models.SearchResponse {
+	var searchResp models.SearchResponse
+	
+	searchResp.RouteData = allRoutesInfo(db, origin, destination)
+	searchResp.PricelistID, searchResp.PricelistExpiryDate = pricelists.CurrentPricelistIDAndExpirationDate(db)
 
-	return allRoutes
+	return searchResp
 }
 
 func allRoutesInfo(db *sql.DB, origin, destination string) []models.RouteData {
