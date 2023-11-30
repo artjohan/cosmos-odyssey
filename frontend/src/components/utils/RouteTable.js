@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import MaterialTable from "material-table";
-import { MenuItem, Select, ThemeProvider, createTheme } from "@mui/material";
+import {
+    MenuItem,
+    Select,
+    ThemeProvider,
+    createTheme,
+    Snackbar,
+} from "@mui/material";
 import RouteDetailsPopup from "./RouteDetailsPopup";
 import { formatDate, formatDuration } from "./UtilFunctions";
 
@@ -13,6 +19,15 @@ function RouteTable({ routes, type, uniqueProviders, pricelistId }) {
     const [showDetails, setShowDetails] = useState(false);
 
     const [tableData, setTableData] = useState(routes);
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const handleClose = (reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+
+        setSnackbarOpen(false);
+    };
 
     const handleRowClick = (event, rowData) => {
         setSelectedRow(rowData);
@@ -182,8 +197,15 @@ function RouteTable({ routes, type, uniqueProviders, pricelistId }) {
                     pricelistId={pricelistId}
                     show={showDetails}
                     onClose={() => setShowDetails(false)}
-                ></RouteDetailsPopup>
+                    setSnackbarOpen={setSnackbarOpen}
+                />
             )}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={handleClose}
+                message="Booking successful!"
+            />
         </div>
     );
 }

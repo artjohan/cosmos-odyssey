@@ -38,3 +38,12 @@ type Pricelist struct {
 	ValidUntil time.Time `json:"validUntil"`
 	Legs       []Leg     `json:"legs"`
 }
+
+type BookingInfo struct {
+	FirstName string `json:"firstName"`
+	LastName string `json:"lastName"`
+	Routes []Route `json:"routes"`
+	TotalPrice float64 `json:"totalPrice"`
+	TotalTravelTime time.Duration `json:"totalTravelTime"`
+	PricelistID int `json:"pricelistId"`
+}
