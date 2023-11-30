@@ -8,9 +8,10 @@ type Planet struct {
 }
 
 type RouteData struct {
-	Routes          []Route   `json:"routes"`
-	TotalPrice      float64   `json:"totalPrice"`
+	Routes          []Route       `json:"routes"`
+	TotalPrice      float64       `json:"totalPrice"`
 	TotalTravelTime time.Duration `json:"totalTravelTime"`
+	TotalDistance   int           `json:"totalDistance"`
 }
 
 type Route struct {
@@ -23,6 +24,7 @@ type Route struct {
 	FlightEnd   time.Time       `json:"flightEnd"`
 	Price       float64         `json:"price"`
 	TravelTime  time.Duration   `json:"travelTime"`
+	Distance    int             `json:"distance"`
 }
 
 type ProviderCompany struct {

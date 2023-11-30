@@ -27,3 +27,12 @@ func CalculateTravelTime(start, end time.Time) time.Duration {
 	travelTime := endTime.Sub(startTime)
 	return travelTime
 }
+
+func CalculateRouteDistance(route []models.Route) int {
+	totalDistance := 0
+	for _, v := range route {
+		totalDistance += v.Distance
+	}
+
+	return totalDistance
+}

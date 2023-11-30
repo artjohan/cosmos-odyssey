@@ -42,9 +42,12 @@ func getAllRoutesInfo(db *sql.DB, origin, destination string) []models.RouteData
 		layoverRoutes := getLayoverRoutes(queryRouteData(db), leg)
 		for _, layoverRoute := range layoverRoutes {
 			var route models.RouteData
+
 			route.Routes = layoverRoute
 			route.TotalPrice = pkg.RoundToTwoDecimals(pkg.CalculateRoutePrice(layoverRoute))
 			route.TotalTravelTime = pkg.CalculateTravelTime(layoverRoute[0].FlightStart, layoverRoute[len(layoverRoute)-1].FlightEnd)
+			route.TotalDistance = pkg.CalculateRouteDistance(layoverRoute)
+
 			allRoutes = append(allRoutes, route)
 		}
 	}
@@ -71,7 +74,8 @@ func queryRouteData(db *sql.DB) []models.Route {
 			pr.id,
 			pr.price,
 			pr.flight_start,
-			pr.flight_end
+			pr.flight_end,
+			l.distance
 		FROM legs AS l
 		JOIN planets AS p1 ON l.origin_id = p1.id
 		JOIN planets AS p2 ON l.destination_id = p2.id
@@ -89,7 +93,7 @@ func queryRouteData(db *sql.DB) []models.Route {
 	for rows.Next() {
 		var routeData models.Route
 		if err := rows.Scan(&routeData.Origin.ID, &routeData.Origin.Name, &routeData.Destination.ID, &routeData.Destination.Name,
-			&routeData.Company.ID, &routeData.Company.Name, &routeData.LegID, &routeData.ID, &routeData.Price, &routeData.FlightStart, &routeData.FlightEnd); err != nil {
+			&routeData.Company.ID, &routeData.Company.Name, &routeData.LegID, &routeData.ID, &routeData.Price, &routeData.FlightStart, &routeData.FlightEnd, &routeData.Distance); err != nil {
 			log.Fatal(err)
 		}
 
