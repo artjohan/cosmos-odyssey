@@ -8,13 +8,13 @@ function Reservations() {
     const [reservations, setReservations] = useState(null);
     const defaultMaterialTheme = createTheme();
 
+    const [selectedRow, setSelectedRow] = useState(null);
+    const [showDetails, setShowDetails] = useState(false);
+
     const handleRowClick = (event, rowData) => {
         setSelectedRow(rowData);
         setShowDetails(true);
     };
-
-    const [selectedRow, setSelectedRow] = useState(null);
-    const [showDetails, setShowDetails] = useState(false);
 
     const displayProviders = (rowData) => {
         var providersMap = new Map();
@@ -142,6 +142,11 @@ function Reservations() {
                             pageSize: 20,
                             emptyRowsWhenPaging: false,
                             sorting: true,
+                        }}
+                        localization={{
+                            toolbar: {
+                                searchPlaceholder: "Search by name",
+                            },
                         }}
                         onRowClick={handleRowClick}
                         title={"All reservations"}

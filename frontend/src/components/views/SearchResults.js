@@ -15,6 +15,10 @@ function SearchResults() {
 
     const [selectedTab, setSelectedTab] = useState("direct");
 
+    const handleTabSelect = (tab) => {
+        setSelectedTab(tab);
+    };
+
     const allUniqueProviders = (data) => {
         var providersMap = new Map();
         data.forEach((routeData) => {
@@ -28,10 +32,6 @@ function SearchResults() {
 
         var uniqueProviders = Array.from(providersMap.values());
         return uniqueProviders;
-    };
-
-    const handleTabSelect = (tab) => {
-        setSelectedTab(tab);
     };
 
     const renderer = ({ minutes, seconds, completed }) => {

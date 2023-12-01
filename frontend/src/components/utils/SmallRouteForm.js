@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toTitleCase } from "./UtilFunctions";
+import { MenuItem, Select } from "@mui/material";
 
 function SmallRouteForm({ origin, destination }) {
     const [planets, setPlanets] = useState([]);
@@ -39,23 +40,6 @@ function SmallRouteForm({ origin, destination }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const originExists = planets.some(
-            (planet) => planet.name.toLowerCase() === originPlanet.toLowerCase()
-        );
-
-        const destinationExists = planets.some(
-            (planet) => planet.name.toLowerCase() === destinationPlanet.toLowerCase()
-        );
-
-        if (!originExists || !destinationExists) {
-            alert("Origin or destination invalid");
-            return;
-        }
-
-        if (originPlanet.toLowerCase() === destinationPlanet.toLowerCase()) {
-            alert("Origin and destination can not be the same planet");
-            return;
-        }
 
         navigateTo(`/search/${originPlanet}/${destinationPlanet}`);
     };
@@ -67,37 +51,34 @@ function SmallRouteForm({ origin, destination }) {
         >
             <Form onSubmit={(e) => handleSubmit(e)} className="smaller-form">
                 <div className="d-flex align-items-center">
-                    <Form.Group controlId="originPlanet" className="mr-2">
-                        <Form.Control
-                            type="text"
-                            placeholder="Origin"
-                            list="originPlanets"
-                            value={originPlanet}
-                            onChange={(event) =>
-                                setOriginPlanet(event.target.value)
-                            }
-                            autoComplete="off"
-                        />
-                        {planets.length > 0 && (
-                            <datalist id="originPlanets">
-                                {planets.map(
-                                    (planet) =>
-                                        originPlanet
-                                            .toLowerCase()
-                                            .startsWith(
-                                                planet.name
-                                                    .toLowerCase()
-                                                    .charAt(0)
-                                            ) && (
-                                            <option
-                                                key={planet.id}
-                                                value={planet.name}
-                                            />
-                                        )
-                                )}
-                            </datalist>
-                        )}
-                    </Form.Group>
+                    <Select
+                        style={{
+                            width: "200px",
+                            margin: "10px",
+                            textAlign: "left",
+                        }}
+                        value={originPlanet}
+                        onChange={(event) =>
+                            setOriginPlanet(event.target.value)
+                        }
+                        displayEmpty
+                        renderValue={(value) =>
+                            value === "" ? "Select origin planet" : value
+                        }
+                    >
+                        {planets.length > 0 &&
+                            planets.map(
+                                (planet) =>
+                                    planet.name !== destinationPlanet && (
+                                        <MenuItem
+                                            key={planet.id}
+                                            value={planet.name}
+                                        >
+                                            {planet.name}
+                                        </MenuItem>
+                                    )
+                            )}
+                    </Select>
                     <div className="text-center">
                         <Button
                             variant="dark"
@@ -107,37 +88,34 @@ function SmallRouteForm({ origin, destination }) {
                             {"<->"}
                         </Button>
                     </div>
-                    <Form.Group controlId="destinationPlanet" className="ml-2">
-                        <Form.Control
-                            type="text"
-                            placeholder="Destination"
-                            list="destinationPlanets"
-                            value={destinationPlanet}
-                            onChange={(event) =>
-                                setDestinationPlanet(event.target.value)
-                            }
-                            autoComplete="off"
-                        />
-                        {planets.length > 0 && (
-                            <datalist id="originPlanets">
-                                {planets.map(
-                                    (planet) =>
-                                        originPlanet
-                                            .toLowerCase()
-                                            .startsWith(
-                                                planet.name
-                                                    .toLowerCase()
-                                                    .charAt(0)
-                                            ) && (
-                                            <option
-                                                key={planet.id}
-                                                value={planet.name}
-                                            />
-                                        )
-                                )}
-                            </datalist>
-                        )}
-                    </Form.Group>
+                    <Select
+                        style={{
+                            width: "200px",
+                            margin: "10px",
+                            textAlign: "left",
+                        }}
+                        value={destinationPlanet}
+                        onChange={(event) =>
+                            setDestinationPlanet(event.target.value)
+                        }
+                        displayEmpty
+                        renderValue={(value) =>
+                            value === "" ? "Select origin planet" : value
+                        }
+                    >
+                        {planets.length > 0 &&
+                            planets.map(
+                                (planet) =>
+                                    planet.name !== originPlanet && (
+                                        <MenuItem
+                                            key={planet.id}
+                                            value={planet.name}
+                                        >
+                                            {planet.name}
+                                        </MenuItem>
+                                    )
+                            )}
+                    </Select>
                 </div>
 
                 <Button variant="dark" className="mt-3" type="submit" block>

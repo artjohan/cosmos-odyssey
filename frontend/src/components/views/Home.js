@@ -22,6 +22,7 @@ function Home() {
                 console.error(error);
             }
         };
+        
         getPlanets();
     }, []);
 

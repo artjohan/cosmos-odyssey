@@ -148,11 +148,6 @@ function RouteTable({ routes, type, uniqueProviders, pricelistId }) {
                         emptyRowsWhenPaging: false,
                         sorting: true,
                     }}
-                    localization={{
-                        toolbar: {
-                            searchPlaceholder: "Search for providers",
-                        },
-                    }}
                     components={{
                         Toolbar: () => (
                             <div>

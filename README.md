@@ -1,6 +1,6 @@
 # cosmos-odyssey
 
-`docker-compose up --build -d`
+To build `docker-compose up --build -d`
 
 `docker-compose down`
 

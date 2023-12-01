@@ -5,10 +5,6 @@ import { useNavigate } from "react-router-dom";
 function Header() {
     const navigateTo = useNavigate();
 
-    const handleNavigate = (path) => {
-        navigateTo(path);
-    };
-
     return (
         <Navbar bg="light" expand="lg">
             <Nav
@@ -16,7 +12,7 @@ function Header() {
                 style={{ width: "50%", textAlign: "center" }}
             >
                 <Nav.Link
-                    onClick={() => handleNavigate("/")}
+                    onClick={() => navigateTo("/")}
                     style={{ width: "100%" }}
                 >
                     Home
@@ -27,7 +23,7 @@ function Header() {
                 style={{ width: "50%", textAlign: "center" }}
             >
                 <Nav.Link
-                    onClick={() => handleNavigate("/reservations")}
+                    onClick={() => navigateTo("/reservations")}
                     style={{ width: "100%" }}
                 >
                     Reservations

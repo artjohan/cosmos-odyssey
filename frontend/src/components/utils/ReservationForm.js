@@ -17,13 +17,15 @@ function ReservationForm({
         event.preventDefault();
         if (firstName.trim() && lastName.trim()) {
             setSnackbarOpen(true);
-            postReservationData();
+            postReservationData(firstName, lastName);
+            setFirstName("");
+            setLastName("");
         } else {
             alert("Can't submit an incomplete form");
         }
     };
 
-    const postReservationData = async () => {
+    const postReservationData = async (firstName, lastName) => {
         const payload = {
             pricelistId,
             routes,
