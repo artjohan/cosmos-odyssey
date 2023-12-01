@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MaterialTable from "material-table";
-import { MenuItem, Select, ThemeProvider, createTheme } from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material";
 import { formatDate, formatDuration } from "../utils/UtilFunctions";
 import RouteDetailsPopup from "../utils/RouteDetailsPopup";
 
@@ -58,13 +58,6 @@ function Reservations() {
                             {
                                 title: "Trip start",
                                 render: (rowData) => {
-                                    const options = {
-                                        year: "numeric",
-                                        month: "2-digit",
-                                        day: "2-digit",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                    };
                                     return rowData.routes.length > 0
                                         ? formatDate(
                                               rowData.routes[0].flightStart
@@ -80,13 +73,6 @@ function Reservations() {
                             {
                                 title: "Trip end",
                                 render: (rowData) => {
-                                    const options = {
-                                        year: "numeric",
-                                        month: "2-digit",
-                                        day: "2-digit",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                    };
                                     return rowData.routes.length > 0
                                         ? formatDate(
                                               rowData.routes[

@@ -66,13 +66,6 @@ function RouteTable({ routes, type, uniqueProviders, pricelistId }) {
                         {
                             title: "Trip start",
                             render: (rowData) => {
-                                const options = {
-                                    year: "numeric",
-                                    month: "2-digit",
-                                    day: "2-digit",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                };
                                 return rowData.routes.length > 0
                                     ? formatDate(rowData.routes[0].flightStart)
                                     : "";
@@ -85,13 +78,6 @@ function RouteTable({ routes, type, uniqueProviders, pricelistId }) {
                         {
                             title: "Trip end",
                             render: (rowData) => {
-                                const options = {
-                                    year: "numeric",
-                                    month: "2-digit",
-                                    day: "2-digit",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                };
                                 return rowData.routes.length > 0
                                     ? formatDate(
                                           rowData.routes[

@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.12.4",
     "@mui/icons-material": "^5.14.19",
+    "@mui/lab": "^5.0.0-alpha.154",
     "@mui/material": "^5.14.19",
     "@mui/styles": "^5.14.19",
     "@testing-library/jest-dom": "^5.17.0",

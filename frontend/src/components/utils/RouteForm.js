@@ -92,7 +92,13 @@ function RouteForm({ planets }) {
                 </Select>
                 <br></br>
 
-                <Button variant="dark" className="mt-4" type="submit" block>
+                <Button
+                    variant="dark"
+                    className="mt-4"
+                    type="submit"
+                    block
+                    disabled={originPlanet && destinationPlanet ? false : true}
+                >
                     Find Route
                 </Button>
             </Form>

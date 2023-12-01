@@ -36,7 +36,7 @@ function SmallRouteForm({ origin, destination }) {
         getPlanets();
         setOriginPlanet(toTitleCase(origin));
         setDestinationPlanet(toTitleCase(destination));
-    }, []);
+    }, [origin, destination]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -118,7 +118,13 @@ function SmallRouteForm({ origin, destination }) {
                     </Select>
                 </div>
 
-                <Button variant="dark" className="mt-3" type="submit" block>
+                <Button
+                    variant="dark"
+                    className="mt-3"
+                    type="submit"
+                    block
+                    disabled={originPlanet && destinationPlanet ? false : true}
+                >
                     Find Route
                 </Button>
             </Form>
