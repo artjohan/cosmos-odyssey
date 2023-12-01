@@ -6,6 +6,7 @@ import App from "./App";
 import ErrorPage from "./components/views/ErrorPage";
 import Home from "./components/views/Home";
 import SearchResults from "./components/views/SearchResults";
+import Reservations from "./components/views/Reservations";
 
 const router = createBrowserRouter([
     {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
             {
                 path: "/search/:origin/:destination",
                 element: <SearchResults />,
+            },
+            {
+                path: "/reservations",
+                element: <Reservations />,
             },
         ],
     },

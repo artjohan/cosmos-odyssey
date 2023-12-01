@@ -14,7 +14,8 @@ func (app *application) server() http.Handler {
 	mux.HandleFunc("/", app.HomeHandler)
 	mux.HandleFunc("/get-planets", app.GetPlanetsHandler)
 	mux.HandleFunc("/get-routes", app.GetRoutesHandler)
-	mux.HandleFunc("/post-booking", app.PostBookingHandler)
+	mux.HandleFunc("/post-reservation", app.PostReservationHandler)
+	mux.HandleFunc("/get-reservations", app.GetReservationsHandler)
 	
 	return app.handleCORS(mux)
 }

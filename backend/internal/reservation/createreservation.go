@@ -1,4 +1,4 @@
-package booking
+package reservation
 
 import (
 	"database/sql"
@@ -7,7 +7,7 @@ import (
 	"github.com/artjohan/cosmos-odyssey/backend/models"
 )
 
-func CreateBooking(db *sql.DB, bookingInfo models.BookingInfo) error {
+func CreateReservation(db *sql.DB, reservationInfo models.ReservationInfo) error {
 	tx, err := db.Begin()
 	if err != nil {
 		log.Println("Error starting transaction:", err)
@@ -22,9 +22,9 @@ func CreateBooking(db *sql.DB, bookingInfo models.BookingInfo) error {
 		}
 	}()
 
-	err = addBookingToTable(tx, bookingInfo)
+	err = addReservationToTable(tx, reservationInfo)
 	if err != nil {
-		log.Println("Error adding booking to table:", err)
+		log.Println("Error adding reservation to table:", err)
 		return err
 	}
 
@@ -37,9 +37,9 @@ func CreateBooking(db *sql.DB, bookingInfo models.BookingInfo) error {
 	return nil
 }
 
-func addBookingToTable(tx *sql.Tx, bookingInfo models.BookingInfo) error {
+func addReservationToTable(tx *sql.Tx, reservationInfo models.ReservationInfo) error {
 	statement := `INSERT INTO reservations (pricelist_id, first_name, last_name, total_price, total_travel_time) values (?, ?, ?, ?, ?)`
-	result, err := tx.Exec(statement, bookingInfo.PricelistID, bookingInfo.FirstName, bookingInfo.LastName, bookingInfo.TotalPrice, bookingInfo.TotalTravelTime)
+	result, err := tx.Exec(statement, reservationInfo.PricelistID, reservationInfo.FirstName, reservationInfo.LastName, reservationInfo.TotalPrice, reservationInfo.TotalTravelTime)
 	if err != nil {
 		log.Println("Error inserting reservation into table:", err)
 		return err
@@ -51,7 +51,7 @@ func addBookingToTable(tx *sql.Tx, bookingInfo models.BookingInfo) error {
 		return err
 	}
 
-	err = addRoutesToTable(tx, bookingInfo.Routes, int(reservationId))
+	err = addRoutesToTable(tx, reservationInfo.Routes, int(reservationId))
 	if err != nil {
 		log.Println("Error inserting reservation routes into table:", err)
 		return err

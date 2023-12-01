@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { formatDuration } from "./UtilFunctions";
 
-function BookingForm({
+function ReservationForm({
     onClose,
     totalTravelTime,
     totalPrice,
@@ -17,13 +17,13 @@ function BookingForm({
         event.preventDefault();
         if (firstName.trim() && lastName.trim()) {
             setSnackbarOpen(true);
-            postBookingData();
+            postReservationData();
         } else {
             alert("Can't submit an incomplete form");
         }
     };
 
-    const postBookingData = async () => {
+    const postReservationData = async () => {
         const payload = {
             pricelistId,
             routes,
@@ -43,7 +43,7 @@ function BookingForm({
 
         try {
             const response = await fetch(
-                "http://localhost:8080/post-booking",
+                "http://localhost:8080/post-reservation",
                 options
             );
             if (response.ok) {
@@ -95,11 +95,11 @@ function BookingForm({
                         firstName.trim() && lastName.trim() ? false : true
                     }
                 >
-                    Book now
+                    Reserve now
                 </Button>
             </div>
         </Form>
     );
 }
 
-export default BookingForm;
+export default ReservationForm;

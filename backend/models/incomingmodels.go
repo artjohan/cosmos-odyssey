@@ -39,7 +39,7 @@ type Pricelist struct {
 	Legs       []Leg     `json:"legs"`
 }
 
-type BookingInfo struct {
+type ReservationInfo struct {
 	FirstName string `json:"firstName"`
 	LastName string `json:"lastName"`
 	Routes []Route `json:"routes"`

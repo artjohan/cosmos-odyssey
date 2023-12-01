@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/artjohan/cosmos-odyssey/backend/internal/booking"
+	"github.com/artjohan/cosmos-odyssey/backend/internal/reservation"
 	"github.com/artjohan/cosmos-odyssey/backend/internal/routing"
 	"github.com/artjohan/cosmos-odyssey/backend/models"
 )
@@ -50,21 +50,34 @@ func (app *application) GetRoutesHandler(w http.ResponseWriter, r *http.Request)
 	w.Write(jsonData)
 }
 
-func (app *application) PostBookingHandler(w http.ResponseWriter, r *http.Request) {
-	var bookingInfo models.BookingInfo
+func (app *application) PostReservationHandler(w http.ResponseWriter, r *http.Request) {
+	var reservationInfo models.ReservationInfo
 
-	err := json.NewDecoder(r.Body).Decode(&bookingInfo)
+	err := json.NewDecoder(r.Body).Decode(&reservationInfo)
 	if err != nil {
-		log.Println("Error decoding booking info into struct", err)
+		log.Println("Error decoding reservation info into struct", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	err = booking.CreateBooking(app.db, bookingInfo)
+	err = reservation.CreateReservation(app.db, reservationInfo)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Booking successful"))
+	w.Write([]byte("Reservation successful"))
+}
+
+func (app *application) GetReservationsHandler(w http.ResponseWriter, r *http.Request) {
+	jsonData, err := json.Marshal(reservation.FetchReservations(app.db))
+	if err != nil {
+		log.Println("Error converting reservations struct into json", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 }

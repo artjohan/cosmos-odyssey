@@ -110,7 +110,7 @@ function RouteTable({ routes, type, uniqueProviders, pricelistId }) {
                                 ),
                         },
                         {
-                            title: "Trip duration",
+                            title: "Travel time",
                             field: "totalTravelTime",
                             render: (rowData) =>
                                 formatDuration(rowData.totalTravelTime),
@@ -198,13 +198,14 @@ function RouteTable({ routes, type, uniqueProviders, pricelistId }) {
                     show={showDetails}
                     onClose={() => setShowDetails(false)}
                     setSnackbarOpen={setSnackbarOpen}
+                    title={"Route details"}
                 />
             )}
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={3000}
                 onClose={handleClose}
-                message="Booking successful!"
+                message="Reservation successful!"
             />
         </div>
     );

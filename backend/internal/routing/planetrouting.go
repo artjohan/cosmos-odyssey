@@ -89,7 +89,7 @@ func queryRouteData(db *sql.DB) []models.Route {
 	`
 	rows, err := db.Query(query)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error querying database for route data", err)
 	}
 	defer rows.Close()
 
@@ -98,10 +98,9 @@ func queryRouteData(db *sql.DB) []models.Route {
 		var routeData models.Route
 		if err := rows.Scan(&routeData.Origin.ID, &routeData.Origin.Name, &routeData.Destination.ID, &routeData.Destination.Name,
 			&routeData.Company.ID, &routeData.Company.Name, &routeData.LegID, &routeData.ID, &routeData.Price, &routeData.FlightStart, &routeData.FlightEnd, &routeData.Distance); err != nil {
-			log.Fatal(err)
+			log.Fatal("Error scanning route data into struct", err)
 		}
 
-		// Calculate TravelTime
 		routeData.TravelTime = pkg.CalculateTravelTime(routeData.FlightStart, routeData.FlightEnd)
 
 		routesData = append(routesData, routeData)

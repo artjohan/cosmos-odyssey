@@ -8,8 +8,8 @@ import Countdown from "react-countdown";
 
 function SearchResults() {
     const { origin, destination } = useParams();
-    const [directRoutes, setDirectRoutes] = useState([]);
-    const [layoverRoutes, setLayoverRoutes] = useState([]);
+    const [directRoutes, setDirectRoutes] = useState(null);
+    const [layoverRoutes, setLayoverRoutes] = useState(null);
     const [pricelistExpiryDate, setPricelistExpiryDate] = useState(null);
     const [pricelistId, setPricelistId] = useState(null);
 
@@ -88,7 +88,7 @@ function SearchResults() {
         getRoutes();
     }, [origin, destination]);
 
-    if (directRoutes || layoverRoutes) {
+    if (Array.isArray(directRoutes) || Array.isArray(layoverRoutes)) {
         return (
             <>
                 <SmallRouteForm origin={origin} destination={destination} />

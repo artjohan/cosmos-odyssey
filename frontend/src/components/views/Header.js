@@ -27,10 +27,10 @@ function Header() {
                 style={{ width: "50%", textAlign: "center" }}
             >
                 <Nav.Link
-                    onClick={() => handleNavigate("/bookings")}
+                    onClick={() => handleNavigate("/reservations")}
                     style={{ width: "100%" }}
                 >
-                    Bookings
+                    Reservations
                 </Nav.Link>
             </Nav>
         </Navbar>
