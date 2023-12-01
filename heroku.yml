@@ -1,0 +1,16 @@
+build:
+  docker:
+    web: ./frontend
+    backend: .
+
+release:
+  image: backend
+  command:
+    - /bin/sh
+    - -c
+    - ./cmd
+
+run:
+  web: npm start
+  backend: ./cmd
+
