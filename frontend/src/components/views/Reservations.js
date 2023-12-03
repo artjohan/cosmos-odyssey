@@ -57,11 +57,14 @@ function Reservations() {
                             {
                                 title: "Trip start",
                                 render: (rowData) => {
-                                    return rowData.routes.length > 0
-                                        ? formatDate(
-                                              rowData.routes[0].flightStart
-                                          )
-                                        : "";
+                                    if(rowData.routes.length > 0) {
+                                        const firstTrip = rowData.routes[0];
+                                        return `${firstTrip.origin.name},\n${formatDate(firstTrip.flightStart)}`;
+                                    }
+                                    return "";
+                                },
+                                cellStyle: {
+                                    whiteSpace: "pre-line",
                                 },
                                 type: "datetime",
                                 customSort: (a, b) =>
@@ -72,13 +75,14 @@ function Reservations() {
                             {
                                 title: "Trip end",
                                 render: (rowData) => {
-                                    return rowData.routes.length > 0
-                                        ? formatDate(
-                                              rowData.routes[
-                                                  rowData.routes.length - 1
-                                              ].flightEnd
-                                          )
-                                        : "";
+                                    if(rowData.routes.length > 0) {
+                                        const finalTrip = rowData.routes[rowData.routes.length - 1];
+                                        return `${finalTrip.destination.name},\n ${formatDate(finalTrip.flightEnd)}`;
+                                    }
+                                    return "";
+                                },
+                                cellStyle: {
+                                    whiteSpace: "pre-line",
                                 },
                                 type: "datetime",
                                 customSort: (a, b) =>
