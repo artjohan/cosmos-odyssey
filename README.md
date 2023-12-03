@@ -7,6 +7,8 @@ Users can select their origin and destination planets and the application will s
 
 Once a user is happy with their chosen route, they can reserve it by entering their first and last name.
 
+Deployed version: https://interplanetaryflights.netlify.app/
+
 ## Instructions
 
 ### Starting with Docker:
@@ -19,7 +21,7 @@ Once a user is happy with their chosen route, they can reserve it by entering th
 
 - Make sure that the latest version of [Go](https://go.dev/doc/install) is installed
 - Run `go run ./backend/cmd/server` in the root directory of the project
-- Navigate to the frontend folder and run `npm install --force`
+- Navigate to the frontend folder and run `npm install --force` (the force flag is required because the material table package causes an upstream dependency conflict)
 - Run `npm start` once all the necessary packages have been installed
 
 ## Technologies

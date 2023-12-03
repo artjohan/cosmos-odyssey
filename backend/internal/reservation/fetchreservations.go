@@ -16,7 +16,22 @@ func FetchReservations(db *sql.DB) []models.ReservationInfo {
 
 func queryReservationsInfo(db *sql.DB) []models.ReservationInfo {
 	query := `
-		SELECT id, pricelist_id, first_name, last_name, total_price, total_travel_time FROM reservations
+		SELECT
+			r.id,
+			r.first_name,
+			r.last_name,
+			r.total_price,
+			r.total_travel_time,
+			p_positions.position,
+			p_positions.total_rows
+		FROM reservations AS r
+		JOIN (
+			SELECT
+				id,
+				ROW_NUMBER() OVER (ORDER BY id) AS position,
+				COUNT(*) OVER () AS total_rows
+			FROM pricelists AS p
+		) p_positions ON r.pricelist_id = p_positions.id
 	`
 
 	rows, err := db.Query(query)
@@ -29,9 +44,14 @@ func queryReservationsInfo(db *sql.DB) []models.ReservationInfo {
 	for rows.Next() {
 		var reservationInfo models.ReservationInfo
 		var reservationId int
-		if err := rows.Scan(&reservationId, &reservationInfo.PricelistID, &reservationInfo.FirstName, &reservationInfo.LastName, &reservationInfo.TotalPrice, &reservationInfo.TotalTravelTime); err != nil {
+
+		var pricelistPos, totalPriceListAmount int
+		if err := rows.Scan(&reservationId, &reservationInfo.FirstName, &reservationInfo.LastName, &reservationInfo.TotalPrice, &reservationInfo.TotalTravelTime, &pricelistPos, &totalPriceListAmount); err != nil {
 			log.Fatal("Error scanning reservation data into struct", err)
 		}
+
+		// calculating how many refreshes left until reservation expires
+		reservationInfo.RefreshesUntilExpiry = (15-totalPriceListAmount+pricelistPos)
 
 		reservationInfo.Routes = queryReservationRoutesInfo(db, reservationId)
 

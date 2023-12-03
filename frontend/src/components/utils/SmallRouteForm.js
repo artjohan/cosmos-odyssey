@@ -122,7 +122,6 @@ function SmallRouteForm({ origin, destination }) {
                     variant="dark"
                     className="mt-3"
                     type="submit"
-                    block
                     disabled={originPlanet && destinationPlanet ? false : true}
                 >
                     Find Route

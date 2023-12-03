@@ -96,7 +96,6 @@ function RouteForm({ planets }) {
                     variant="dark"
                     className="mt-4"
                     type="submit"
-                    block
                     disabled={originPlanet && destinationPlanet ? false : true}
                 >
                     Find Route

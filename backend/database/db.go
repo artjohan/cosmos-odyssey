@@ -11,13 +11,7 @@ import (
 )
 
 func OpenDatabase() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "backend/database/database.db")
-	if err != nil {
-		return nil, err
-	}
-
-	// enabling foreign key support
-	_, err = db.Exec("PRAGMA foreign_keys = ON")
+	db, err := sql.Open("sqlite3", "backend/database/database.db?_foreign_keys=on")
 	if err != nil {
 		return nil, err
 	}

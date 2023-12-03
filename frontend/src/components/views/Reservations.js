@@ -35,7 +35,6 @@ function Reservations() {
                 );
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data);
                     setReservations(data);
                 } else {
                     console.log(response.statusText);
@@ -48,13 +47,13 @@ function Reservations() {
     }, []);
 
     if (Array.isArray(reservations)) {
-        return (
+        return reservations.length > 0 ? (
             <div style={{ width: "100%", height: "100%" }}>
                 <ThemeProvider theme={defaultMaterialTheme}>
                     <MaterialTable
                         columns={[
-                            { title: "First Name", field: "firstName" },
-                            { title: "Last Name", field: "lastName" },
+                            { title: "First name", field: "firstName" },
+                            { title: "Last name", field: "lastName" },
                             {
                                 title: "Trip start",
                                 render: (rowData) => {
@@ -122,6 +121,12 @@ function Reservations() {
                                 sorting: false,
                                 searchable: false,
                             },
+                            {
+                                title: "Refreshes until expiry",
+                                field: "refreshesUntilExpiry",
+                                type: "numeric",
+                                searchable: false,
+                            },
                         ]}
                         data={reservations}
                         options={{
@@ -154,6 +159,16 @@ function Reservations() {
                         onClose={() => setShowDetails(false)}
                     />
                 )}
+            </div>
+        ) : (
+            <div
+                style={{
+                    textAlign: "center",
+                    padding: "50px",
+                    fontSize: "xx-large",
+                }}
+            >
+                There are no active reservations
             </div>
         );
     }

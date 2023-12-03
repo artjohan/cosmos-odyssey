@@ -46,4 +46,5 @@ type ReservationInfo struct {
 	TotalPrice float64 `json:"totalPrice"`
 	TotalTravelTime time.Duration `json:"totalTravelTime"`
 	PricelistID int `json:"pricelistId"`
+	RefreshesUntilExpiry int `json:"refreshesUntilExpiry"`
 }
